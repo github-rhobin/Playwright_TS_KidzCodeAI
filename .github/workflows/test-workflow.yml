@@ -1,35 +1,45 @@
-name: Playwright test
+name: Playwright Test
 on: [push, pull_request]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      # This removes the "Node 20 is deprecated" warnings you saw earlier
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true" 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+
       - name: Setup node.js
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
+          cache: 'npm' # Speeds up your runs by caching node_modules
+
       - name: Install dependencies
-        run: npm install
-      - name: Install Playwright Chromium Binary # Only Chromium Binary (remove chromium if you want to include firefox and webkit)
+        run: npm ci # More reliable than 'npm install' for CI/CD
+
+      - name: Install Playwright Chromium
         run: npx playwright install chromium --with-deps
+
       - name: Run Playwright tests
         run: npx playwright test
         env:
           CI: "true"
-      - name: Upload Playwright report
+
+      - name: Upload Full Playwright Report (For Devs/Debugging)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
-          path: playwright-report/
+          name: playwright-report-full
+          path: playwright-report/ # Uploads the whole folder (traces/videos included)
           retention-days: 30
-      - name: Upload Monocart report
+
+      - name: Upload Single Monocart HTML (For the Boss)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: monocart-report
-          path: monocart-report/
+          name: monocart-dashboard
+          path: monocart-report/index.html # Uploads ONLY the one file for easy sharing
           retention-days: 30

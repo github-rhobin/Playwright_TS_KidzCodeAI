@@ -18,17 +18,22 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 1 : 1,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    ['html', { outputFolder: 'playwright-report', open: 'never' }],
-    ['list'], // Keep terminal output clean
-    ['monocart-reporter', {  
+    ["list"],
+    ["monocart-reporter",
+      {
         name: "My Test Report",
-        outputFile: './monocart-report/index.html' // Path to save the report
-    }]
+        outputFile: "./monocart-report/index.html",
+        inline: true,
+        attachments: {
+          base64: true, // This puts screenshots inside the HTML file
+        },
+      },
+    ],
   ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
@@ -36,7 +41,14 @@ export default defineConfig({
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: "on-first-retry",
+    trace: "retain-on-failure",
+
+    screenshot: "on",
+
+    video: {
+      mode: "retain-on-failure",
+      size: { width: 1920, height: 1080 },
+    },
 
     /* Run Headless Mode in CI environment and Headed Mode if not (Local Run) */
     headless: process.env.CI === "true",
@@ -44,7 +56,6 @@ export default defineConfig({
     // launchOptions: {
     //   slowMo: 1000, // Adds a 1000ms (1 second) delay between every operation
     // }
-
   },
 
   /* Configure projects for major browsers */
