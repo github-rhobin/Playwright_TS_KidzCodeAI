@@ -24,8 +24,9 @@ export default defineConfig({
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
     ["list"],
-    ["html", { outputFolder: 'playwright-report', open: 'never' }],
-    ["monocart-reporter",
+    ["html", { outputFolder: "playwright-report", open: "never" }],
+    [
+      "monocart-reporter",
       {
         name: "My Test Report",
         outputFile: "./monocart-report/index.html",
