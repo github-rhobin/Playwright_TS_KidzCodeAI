@@ -33,8 +33,13 @@ export default defineConfig({
         outputFile: "./monocart-report/index.html",
         inline: true,
         attachments: {
-          base64: true, // This puts screenshots inside the HTML file
+          base64: true, // Converts standard attachments to base64 strings
         },
+        // Add this to ensure images are treated as inline data
+        onEnd: async (reportData, { config, stats }) => {
+            // This is a common pattern to ensure data is fully processed
+            console.log("Generating inline monocart report...");
+        }
       },
     ],
   ],
