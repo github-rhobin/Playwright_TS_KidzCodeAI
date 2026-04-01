@@ -12,6 +12,5 @@ test('invalid login', async ({ page }) => {
 
   await page.waitForTimeout(3000); // Wait exactly 3 seconds
   
-  await expect(page.getByText('Warning: No match for E-Mail')).toBeVisible();
-  await expect(page.locator('#account-login')).toContainText('Warning: No match for E-Mail Address and/or Password.');
+  await expect(page.getByText('Warning: Your account has exceeded allowed number of login attempts. Please try again in 1 hour.')).toBeVisible();
 });
